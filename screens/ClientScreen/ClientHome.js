@@ -22,16 +22,16 @@ export default function ClientHome({navigation}){
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                <Text style={styles.header}>Thông tin nhà trọ của bạn</Text>
+                <Text style={styles.header}>Hostel information</Text>
                 <View style={styles.info}>
-                    <Text style={styles.infoField}>Tên nhà trọ: {info.hostealName}</Text>
-                    <Text style={styles.infoField}>Địa chỉ: {info.hostelAddress}</Text>
-                    <Text style={styles.infoField}>Phòng: {info.roomId}</Text>
-                    <Text style={styles.infoField}>Chủ trọ: {info.host}</Text>
-                    <Text style={styles.infoField}>Số điện thoại: {info.phoneNum}</Text>
+                    <Text style={styles.infoField}>Hostel name: {info.hostealName}</Text>
+                    <Text style={styles.infoField}>Address: {info.hostelAddress}</Text>
+                    <Text style={styles.infoField}>Room Id: {info.roomId}</Text>
+                    <Text style={styles.infoField}>Host name: {info.host}</Text>
+                    <Text style={styles.infoField}>Host's phone number: {info.phoneNum}</Text>
                 </View>
                 <Pressable style={styles.bt}>
-                    <Text style={styles.btText}>Rời khỏi nhà trọ</Text>
+                    <Text style={styles.btText}>Leave hostel</Text>
                 </Pressable>
             </View>
         </View>

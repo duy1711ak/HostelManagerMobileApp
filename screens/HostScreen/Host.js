@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UserContext from '../context/UserContext';
 import HostelClient from './tab/HostelClient';
-import HostelNotification from './tab/HostelNotification';
 import HostelRoom from './tab/HostelRoom';
 
 const general = require('../../style')
@@ -56,14 +55,6 @@ export default function HostScreen({route, navigation}){
                     options={{
                         headerShown: false,
                         tabBarLabel:'Room'
-                    }}
-                ></Tab.Screen>
-                <Tab.Screen 
-                    name='HostelNotification' 
-                    component={HostelNotification}
-                    options={{
-                        headerShown: false,
-                        tabBarLabel:'Notification'
                     }}
                 ></Tab.Screen>
             </Tab.Navigator>

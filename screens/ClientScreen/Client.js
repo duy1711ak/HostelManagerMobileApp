@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ClientNotification from './ClientNotification';
 import ClientHome from './ClientHome';
 import UserContext from '../context/UserContext';
 
@@ -28,9 +27,6 @@ export default function ClientScreen({route, navigation}) {
           
                         if (route.name === 'ClientHome') {
                             iconName = 'home' 
-                        } 
-                        else if (route.name === 'ClientNotification') {
-                            iconName = 'bell'
                         }
                         return <Icon name={iconName} size={size} color={color}></Icon>
                     },
@@ -44,14 +40,6 @@ export default function ClientScreen({route, navigation}) {
                     options={{
                         headerShown: false,
                         tabBarLabel:'Home'
-                    }}
-                ></Tab.Screen>
-                <Tab.Screen 
-                    name='ClientNotification' 
-                    component={ClientNotification} 
-                    options={{
-                        headerShown: false,
-                        tabBarLabel:'Notification'
                     }}
                 ></Tab.Screen>
             </Tab.Navigator>

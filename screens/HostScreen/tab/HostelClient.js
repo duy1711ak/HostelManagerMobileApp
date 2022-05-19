@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, Pressable, StyleSheet, View, Text, Modal, TextInput } from 'react-native';
 import HeaderApp from '../../component/HeaderApp';
+import checkValid from '../../component/CheckValid';
 import { Picker } from "@react-native-picker/picker";
 
 const general = require('../../../style')
@@ -45,6 +46,12 @@ const data = [
     }
 ]
 
+function haveSpecialChar(str){
+    const format = /[^A-Za-z0-9]/
+    if (str.length == 0) return false;
+    return format.test(str)
+}
+
 const array = data.reduce(
     (array, item)=>{
         if (array.indexOf(item.rid)>=0){
@@ -74,8 +81,9 @@ export default function HostelClient({navigation}){
     const [roomId, setRoomId] = React.useState(array[0]);
     const [phoneNum, setPhoneNum] = React.useState('');
     const [uid, setUid] = React.useState('');
-    const [popUpVisible, setPopUpVisible] = React.useState('')
-    const [message, setMessage] = React.useState('')
+    const [popUp, setPopUp] = React.useState({visible: false, content: ''});
+    const [phoneNumErr, setPhoneNumErr] = React.useState('');
+    const [uidErr, setUidErr] = React.useState('');
 
 
     return (
@@ -101,7 +109,7 @@ export default function HostelClient({navigation}){
                     >
                         <View style={styles.Modal}>
                             <View style={styles.ModalContent}>
-                                <Text style={styles.ModalText}>Tên phòng:</Text>
+                                <Text style={styles.ModalText}>Room name:</Text>
                                 <Picker
                                     ref={addPickerRef}
                                     selectedValue={roomId}
@@ -112,19 +120,33 @@ export default function HostelClient({navigation}){
                                 >
                                     {roomList}
                                 </Picker>
-                                <Text style={styles.ModalText}>Số điện thoại:</Text>
+                                <Text style={styles.ModalText}>Phone number</Text>
                                 <TextInput 
                                     style={styles.ModalTextInput}
                                     value={phoneNum}
                                     onChangeText={setPhoneNum}
                                     keyboardType='numeric'
                                 ></TextInput>
-                                <Text style={styles.ModalText}>Mã UID:</Text>
+                                <Text
+                                    style={{
+                                        color: 'red',
+                                        fontSize: 12,
+                                        fontWeight: '500',
+                                    }}
+                                >{phoneNumErr}</Text>
+                                <Text style={styles.ModalText}>UID:</Text>
                                 <TextInput 
                                     style={styles.ModalTextInput}
                                     value={uid}
                                     onChangeText={setUid}
                                 ></TextInput>
+                                <Text
+                                    style={{
+                                        color: 'red',
+                                        fontSize: 12,
+                                        fontWeight: '500',
+                                    }}
+                                >{uidErr}</Text>
                             </View>
                             <View style={styles.ModalBtView}>
                                 <Pressable 
@@ -135,10 +157,23 @@ export default function HostelClient({navigation}){
                                         }
                                     }
                                 >
-                                    <Text style={styles.ModalBtText}>Hủy</Text>
+                                    <Text style={styles.ModalBtText}>Cancel</Text>
                                 </Pressable>
-                                <Pressable style={styles.ModalBt}>
-                                    <Text style={styles.ModalBtText}>Xác nhận</Text>
+                                <Pressable 
+                                    style={styles.ModalBt}
+                                    onPress={
+                                        () => {
+                                            let isValid = true;
+                                            isValid = checkValid(phoneNum, setPhoneNumErr);
+                                            isValid = checkValid(uid, setUidErr);
+                                            if (isValid) {
+                                                setAddModalVisible(false)
+                                                setPopUp({visible: true, content: 'Add client successfully'});
+                                            }
+                                        }
+                                    }
+                                >
+                                    <Text style={styles.ModalBtText}>Confirm</Text>
                                 </Pressable>
                             </View>
                         </View>
@@ -163,7 +198,7 @@ export default function HostelClient({navigation}){
                         width: '100%'}}
                     >
                         <View style={styles.Modal}>
-                            <Text>Bạn chắc chắn muốn xóa khách hàng có UID: {deleteModal.id} khỏi danh sách thuê trọ chứ</Text>
+                            <Text>Do you want to delete client whose UID is {deleteModal.id} ?</Text>
                             <View style={styles.ModalBtView}>
                                 <Pressable 
                                     style={styles.ModalBt}
@@ -173,10 +208,59 @@ export default function HostelClient({navigation}){
                                         }
                                     }
                                 >
-                                    <Text style={styles.ModalBtText}>Hủy</Text>
+                                    <Text style={styles.ModalBtText}>Cancel</Text>
                                 </Pressable>
-                                <Pressable style={styles.ModalBt}>
-                                    <Text style={styles.ModalBtText}>Xác nhận</Text>
+                                <Pressable 
+                                    style={styles.ModalBt}
+                                    onPress={
+                                        () => {
+                                            setDeleteModal({id:'', visible: false});
+                                            setPopUp({visible: true, content: 'Delete successfully'})
+                                        }
+                                    }
+                                >
+                                    <Text style={styles.ModalBtText}>Confirm</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    animationType='none'
+                    transparent={true}
+                    visible={popUp.visible}
+                    onRequestClose={
+                        () => {
+                            setPopUp({visible: false, content: ''})
+                        }
+                    }
+                >
+                    <View style={{
+                        backgroundColor: '#0808086F',
+                        flexDirection: "column",
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%',
+                        width: '100%'}}
+                    >
+                        <View style={styles.Modal}>
+                            <Text>{popUp.content}</Text>
+                            <View style={{
+                                width: '60%',
+                                marginTop: 50,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <Pressable 
+                                    style={styles.ModalBt}
+                                    onPress={
+                                        () => {
+                                            setPopUp({visible: false, content: ''})
+                                        }
+                                    }
+                                >
+                                    <Text style={styles.ModalBtText}>Ok</Text>
                                 </Pressable>
                             </View>
                         </View>
@@ -208,7 +292,7 @@ export default function HostelClient({navigation}){
                             }
                         }
                     >
-                        <Text style={styles.bt}>Thêm</Text>
+                        <Text style={styles.bt}>Add</Text>
                     </Pressable>
                 </View>
                 <FlatList
@@ -238,10 +322,10 @@ function Client({client}){
         <View style={styles.clientView}>
             <View style={{width: '90%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                 <View style={{width: '80%'}}>
-                    <Text style={styles.clientText}>Phòng: {client.rid}</Text>
-                    <Text style={styles.clientText}>Tên: {client.name}</Text>
+                    <Text style={styles.clientText}>Room: {client.rid}</Text>
+                    <Text style={styles.clientText}>Full name: {client.name}</Text>
                     <Text style={styles.clientText}>UID: {client.uid}</Text>
-                    <Text style={styles.clientText}>SĐT: {client.phoneNum}</Text>
+                    <Text style={styles.clientText}>Phone number: {client.phoneNum}</Text>
                 </View>
                 <Pressable
                     onPress={
@@ -250,7 +334,7 @@ function Client({client}){
                         }
                     }
                 >
-                    <Text style={styles.bt}>Xóa</Text>
+                    <Text style={styles.bt}>Delete</Text>
                 </Pressable>
             </View>
         </View>
@@ -320,7 +404,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         alignItems: 'center',
         justifyContent: 'center',
-        height: '50%',
+        height: '60%',
         width: '90%',
         marginTop: '20%',
         borderColor: general.primary1,
@@ -341,7 +425,7 @@ const styles = StyleSheet.create({
         height: 40,
         width: 240,
         paddingLeft: 20,
-        paddingBottom: 12,
+        paddingTop: 9,
         fontSize: general.smalltext,
         borderColor: general.primary1,
         borderWidth: 2,
