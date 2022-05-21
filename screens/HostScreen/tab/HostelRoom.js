@@ -2,27 +2,30 @@ import React from 'react';
 import { FlatList, Pressable, StyleSheet, View, Text, Modal, TextInput } from 'react-native';
 import HeaderApp from '../../component/HeaderApp';
 import checkValid from '../../component/CheckValid';
+import UserContext from '../../context/UserContext';
 
+const hostelRoomApi = require('./HostelRoomAPI')
 const general = require('../../../style')
-
-const data = [
-    {rid: 1, rname: '001'},
-    {rid: 2, rname: '002'},
-    {rid: 3, rname: '003'},
-    {rid: 4, rname: '004'},
-    {rid: 5, rname: '005'},
-    {rid: 6, rname: '006'}
-]
 
 export default function HostelRoom({navigation}){
     const [addModal, setAddModal] = React.useState(false);
     const [rid, setRid] = React.useState('');
     const [addErr, setAddErr] = React.useState('');
-    const [changeModal, setChangeModal] = React.useState({visible: false, id: ''});
+    const [changeModal, setChangeModal] = React.useState({visible: false, id: '', name:''});
     const [ridChange, setRidChange] = React.useState('');
     const [changeErr, setChangeErr] = React.useState('');
-    const [deleteModal, setDeleteModal] = React.useState({visible: false, id: ''});
+    const [deleteModal, setDeleteModal] = React.useState({visible: false, id: '', name:''});
     const [popUp, setPopUp] = React.useState({visible: false, content: ''});
+    const [data, setData] = React.useState([]);
+    const [catchListChangedEv, setCatchListChangedEv]= React.useState(false);
+
+    const user = React.useContext(UserContext);
+
+    React.useEffect(
+        ()=>{
+            hostelRoomApi.getRoomList(user.id, setData);
+        }, [catchListChangedEv] )
+
 
     return (
         <View style={styles.container}>
@@ -32,14 +35,14 @@ export default function HostelRoom({navigation}){
                 visible={changeModal.visible}
                 onRequestClose={
                     () => {
-                        setChangeModal({visible: false, id:''});
+                        setChangeModal({visible: false, id:'', name: ''});
                     }
                 }
             >
                 <View style={styles.modalView}>
                     <View style={styles.Modal}>
                         <Text style={styles.modalTitle}>Change room name</Text>
-                        <Text style={styles.ModalText}>Do you want to change name of room {changeModal.id} to:</Text>
+                        <Text style={styles.ModalText}>Do you want to change name of room {changeModal.name} to:</Text>
                         <TextInput 
                             style={styles.ModalTextInput}
                             value={ridChange}
@@ -57,7 +60,7 @@ export default function HostelRoom({navigation}){
                                 style={styles.ModalBt}
                                 onPress={
                                     () => {
-                                        setChangeModal({visible: false, id:''});
+                                        setChangeModal({visible: false, id:'', name: ''});
                                     }
                                 }
                             >
@@ -69,8 +72,15 @@ export default function HostelRoom({navigation}){
                                     () => {
                                         let isValid = checkValid(ridChange, setChangeErr)
                                         if (isValid) {
-                                            setChangeModal({id:'', visible: false});
-                                            setPopUp({visible: true, content: 'Change room name successfully!'})
+                                            hostelRoomApi.changeRoomName(user.id, changeModal.id, ridChange, 
+                                                ()=>{
+                                                    setPopUp({visible: true, content: 'Change successfully'});
+                                                    setCatchListChangedEv(!catchListChangedEv);
+                                                    setChangeModal({visible: false, id: '', name: ''})
+                                                },
+                                                (message)=>{
+                                                    setPopUp({visible: true, content: message})
+                                                })
                                         }
                                     }
                                 }
@@ -124,8 +134,14 @@ export default function HostelRoom({navigation}){
                                     () => {
                                         let isValid = checkValid(rid, setAddErr)
                                         if (isValid) {
-                                            setAddModal({id:'', visible: false});
-                                            setPopUp({visible: true, content: 'Add room successfully!'})
+                                            hostelRoomApi.addRoom(user.id, rid, ()=>{
+                                                setCatchListChangedEv(!catchListChangedEv);
+                                                setPopUp({visible: true, content: 'Add room successfully'});
+                                                setAddModal(false);
+                                            }, 
+                                            (message) => {
+                                                setPopUp({visible: true, content: message})
+                                            })
                                         }
                                     }
                                 }
@@ -142,20 +158,20 @@ export default function HostelRoom({navigation}){
                 visible={deleteModal.visible}
                 onRequestClose={
                     () => {
-                        setDeleteModal({visible: false, id: ''})
+                        setDeleteModal({visible: false, id: '', name: ''})
                     }
                 }
             >
                 <View style={styles.modalView}>
                     <View style={styles.Modal}>
                         <Text style={styles.modalTitle}>Delete room</Text>
-                        <Text style={styles.ModalText}>Do you want to delete room {deleteModal.id} ?</Text>
+                        <Text style={styles.ModalText}>Do you want to delete room {deleteModal.name} ?</Text>
                         <View style={styles.ModalBtView}>
                             <Pressable 
                                 style={styles.ModalBt}
                                 onPress={
                                     () => {
-                                        setDeleteModal({visible: false, id: ''})
+                                        setDeleteModal({visible: false, id: '', name: ''})
                                     }
                                 }
                             >
@@ -165,8 +181,16 @@ export default function HostelRoom({navigation}){
                                 style={styles.ModalBt}
                                 onPress={
                                     () => {
-                                        setDeleteModal({id:'', visible: false});
-                                        setPopUp({visible: true, content: 'Delete successfully!'})
+                                        hostelRoomApi.deleteRoom(user.id, deleteModal.id, 
+                                            ()=>{
+                                                setDeleteModal({id:'', visible: false, name: ''});
+                                                setPopUp({visible: true, content: 'Delete successfully!'});
+                                                setCatchListChangedEv(!catchListChangedEv);
+                                            },
+                                            (message)=>{
+                                                setPopUp({visible: true, content: message})
+                                                setDeleteModal({id:'', visible: false, name: ''});
+                                            })
                                     }
                                 }
                             >
@@ -246,11 +270,11 @@ export default function HostelRoom({navigation}){
 function Room({room, changeFunc, deleteFunc}){
     return (
         <View style={styles.roomView}>
-            <Text>Room: {room.rname}</Text>
+            <Text>Room: {room.roomName}</Text>
             <Pressable
                 onPress={
                     ()=>{
-                        changeFunc({visible: true, id: room.rname})
+                        changeFunc({visible: true, id: room.roomId, name: room.roomName})
                     }
                 }
             >
@@ -259,7 +283,7 @@ function Room({room, changeFunc, deleteFunc}){
             <Pressable
                 onPress={
                     ()=>{
-                        deleteFunc({visible: true, id: room.rname})
+                        deleteFunc({visible: true, id: room.roomId, name: room.roomName})
                     }
                 }
             >

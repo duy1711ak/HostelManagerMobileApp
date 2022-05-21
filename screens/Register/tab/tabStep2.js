@@ -1,6 +1,7 @@
 import React from "react";
-import {Pressable, View, Text, StyleSheet, TextInput} from "react-native";
+import {Pressable, View, Text, StyleSheet, TextInput, Modal} from "react-native";
 import RegisterContext from "../../context/RegisterContext";
+import axios from 'axios';
 const general = require('../../../style')
 
 export default function Tab2({navigation}){
@@ -9,9 +10,38 @@ export default function Tab2({navigation}){
     const [usernameErr, setUsernameErr] = React.useState('');
     const [passwordErr, setPasswordErr] = React.useState('');
     const [confirmErr, setConfirmErr] = React.useState('');
+    const [modalVisible, setModalVisible] = React.useState(false)
 
     return (
         <View style={styles.container}>
+            <Modal
+                animationType='none'
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose ={
+                    () => {
+                        setModalVisible(false)
+                    }
+                }
+            >
+                <View style={styles.modal}>
+                    <Text style={styles.modalText} >   
+                        Username is exists. Please enter different username.
+                    </Text>
+                    <Pressable
+                        style={styles.modalBt}
+                        onPress={
+                            () => {
+                                setModalVisible(false);
+                            }
+                        }
+                    >
+                        <Text style={styles.modalBtText}>
+                            Ok
+                        </Text>
+                    </Pressable>
+                </View>
+            </Modal>
             <Text style={styles.label}>Step 2. Create account</Text>
             <View style={styles.field}>
                 <Text style={styles.fieldName}>Username:</Text>
@@ -137,10 +167,7 @@ export default function Tab2({navigation}){
                             }
 
                             if (isValid){
-                                navigation.navigate('Client', {
-                                    id: 'C0001',
-                                    name: user.Username
-                                });
+                                register(user, navigation, setModalVisible);
                             }
                         }
                     }
@@ -157,6 +184,48 @@ function haveSpecialChar(str){
     return format.test(str)
 }
 
+async function register(user, navigation, callback){
+    try {
+        const response = await fetch('https://hostel0tdtd.herokuapp.com/register', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: user.Name,
+                phoneNum: user.PhoneNum,
+                username: user.Username,
+                password: user.Password,
+                isClient: !user.IsHost,
+                address: user.HostelAddress,
+                hostelName: user.HostelName
+            })
+        });
+        if (response.status == 200){
+            const json = await response.json();
+            console.log(json)
+            if (json.isClient){
+                navigation.navigate('Client', {
+                    id: json.UId,
+                    name: json.name
+                });
+            }
+            else {
+                navigation.navigate('Host', {
+                    id: json.UId,
+                    name: json.name
+                });
+            }
+        }
+        else {
+            callback(true);
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 const styles = StyleSheet.create({
     container : {
         backgroundColor: general.backgroundColor,
@@ -209,5 +278,42 @@ const styles = StyleSheet.create({
     },
     pressable : {
         height : 40,
-    }
+    },
+    modal: {
+        backgroundColor: general.popUp,
+        flexDirection: "column",
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '70%',
+        width: '90%',
+        marginTop: '30%',
+        marginLeft: '5%',
+        borderColor: general.primary1,
+        borderWidth: 2,
+        borderRadius: 20
+    },
+    modalText : {
+        width: '90%',
+        marginTop: 20,
+        marginBottom: 40,
+        fontSize: general.smalltext,
+        fontWeight: '500'
+    },
+    modalBt : {
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderColor: general.primary1,
+        borderWidth: 2,
+        borderRadius: 15,
+        marginBottom: 20,
+        width: '50%'
+    },
+    modalBtText: {
+        height: 40,
+        paddingTop: 9,
+        textAlign: 'center',
+        fontSize: general.smalltext,
+        fontWeight: '500'
+    },
 })

@@ -123,21 +123,7 @@ export default function LogInScreen({navigation}) {
                         }
 
                         if (isValid){
-                            if (username == 'C'){
-                                navigation.navigate('Client', {
-                                    id: 'C0001',
-                                    name : username
-                                });
-                            }
-                            else if (username == 'H') {
-                                navigation.navigate('Host', {
-                                    id: 'H0001',
-                                    name : username
-                                });
-                            }
-                            else {
-                                setModalVisible(true)
-                            }
+                            login(username, password, navigation, setModalVisible)
                         }
                     }
                 }
@@ -162,6 +148,44 @@ function haveSpecialChar(str){
     const format = /[^A-Za-z0-9]/
     if (str.length == 0) return false;
     return format.test(str)
+}
+
+const login = async (username, password,navigation, callback) => {
+    try {
+        const response = await fetch('https://hostel0tdtd.herokuapp.com/login',{
+            method : 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        })
+        const status = response.status;
+        if (status == 200){
+            const json = await response.json();
+            if (json.user.isClient){
+                navigation.navigate('Client', {
+                    id: json.user.UId,
+                    name: json.user.name
+                });
+            }
+            else {
+                navigation.navigate('Host', {
+                    id: json.user.UId,
+                    name: json.user.name
+                });
+            }
+        }
+        else{
+            callback(true)
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
 
 const styles = StyleSheet.create({

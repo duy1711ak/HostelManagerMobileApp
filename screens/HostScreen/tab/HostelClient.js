@@ -2,89 +2,48 @@ import React from 'react';
 import { FlatList, Pressable, StyleSheet, View, Text, Modal, TextInput } from 'react-native';
 import HeaderApp from '../../component/HeaderApp';
 import checkValid from '../../component/CheckValid';
+const hostelClientApi = require('./HostelClientApi');
+const hostelRoomApi = require('./HostelRoomAPI');
 import { Picker } from "@react-native-picker/picker";
+import UserContext from '../../context/UserContext';
 
 const general = require('../../../style')
-
-const data = [
-            {
-                rid: '001',
-                uid: 'C001',
-                name: 'Duy1',
-                phoneNum: '0397720433'
-            },
-            {
-                rid: '001',
-                uid: 'C002',
-                name: 'Duy2',
-                phoneNum: '2222222222'
-            },
-            {
-                rid: '002',
-                uid: 'C003',
-                name: 'Duy3',
-                phoneNum: '3333320433'
-            }
-    ,
-    {
-        rid: '003',
-        uid: 'C004',
-        name: 'Duy4',
-        phoneNum: '444'
-    },
-    {
-        rid: '003',
-        uid: 'C005',
-        name: 'Duy5',
-        phoneNum: '555'
-    },
-    {
-        rid: '003',
-        uid: 'C006',
-        name: 'Duy6',
-        phoneNum: '666'
-    }
-]
-
-function haveSpecialChar(str){
-    const format = /[^A-Za-z0-9]/
-    if (str.length == 0) return false;
-    return format.test(str)
-}
-
-const array = data.reduce(
-    (array, item)=>{
-        if (array.indexOf(item.rid)>=0){
-            return array;
-        }
-        else{
-            array.push(item.rid);
-            return array;
-        }
-    },
-    new Array()
-)
 
 const Ctx = React.createContext()
 
 export default function HostelClient({navigation}){
     const pickerRef = React.useRef();
     const addPickerRef = React.useRef();
+    const user = React.useContext(UserContext)
     const [room, setRoom] = React.useState('');
-    const roomList = array.map(
+    
+    const [data, setData] = React.useState([]);
+    const [list, setList] = React.useState([]);
+    const roomList = list.map(
             (item) => {
-                return <Picker.Item label={item} value={item} key={item}/>
+                return <Picker.Item label={item.roomName} value={item.roomName} key={item.roomName}/>
             }
     )
     const [addModalvisible, setAddModalVisible] = React.useState(false);
     const [deleteModal, setDeleteModal] = React.useState({id: '', visible: false});
-    const [roomId, setRoomId] = React.useState(array[0]);
+    const [roomId, setRoomId] = React.useState(list[0]);
     const [phoneNum, setPhoneNum] = React.useState('');
     const [uid, setUid] = React.useState('');
     const [popUp, setPopUp] = React.useState({visible: false, content: ''});
     const [phoneNumErr, setPhoneNumErr] = React.useState('');
     const [uidErr, setUidErr] = React.useState('');
+    const [catchListChangeEvent, setCatchListChangeEvent] = React.useState(false);
 
+    React.useEffect(
+        ()=>{
+            hostelClientApi.getClientList(user.id, setData)
+        }, [catchListChangeEvent])
+
+    React.useEffect(
+        ()=>{
+            hostelRoomApi.getRoomList(user.id, setList)
+        }, []
+    )
 
     return (
         <Ctx.Provider value={{SetDeleteModal: setDeleteModal}}>
@@ -167,8 +126,16 @@ export default function HostelClient({navigation}){
                                             isValid = checkValid(phoneNum, setPhoneNumErr);
                                             isValid = checkValid(uid, setUidErr);
                                             if (isValid) {
-                                                setAddModalVisible(false)
-                                                setPopUp({visible: true, content: 'Add client successfully'});
+                                                hostelClientApi.addClient(user.id, roomId, uid, phoneNum,
+                                                    ()=>{
+                                                        setAddModalVisible(false);
+                                                        setPopUp({visible: true, content: 'Add client successfully'});
+                                                        setCatchListChangeEvent(!catchListChangeEvent);
+                                                    },
+                                                    (message)=>{
+                                                        setPopUp({visible: true, content: message});
+                                                    })
+                                                
                                             }
                                         }
                                     }
@@ -204,7 +171,7 @@ export default function HostelClient({navigation}){
                                     style={styles.ModalBt}
                                     onPress={
                                         () => {
-                                            setDeleteModal({id: '', visible: false})
+                                            setDeleteModal({id: '', visible: false});
                                         }
                                     }
                                 >
@@ -214,8 +181,15 @@ export default function HostelClient({navigation}){
                                     style={styles.ModalBt}
                                     onPress={
                                         () => {
-                                            setDeleteModal({id:'', visible: false});
-                                            setPopUp({visible: true, content: 'Delete successfully'})
+                                            hostelClientApi.deleteClient(user.id, deleteModal.id, 
+                                                ()=>{
+                                                    setDeleteModal({id: '', visible: false});
+                                                    setPopUp({visible: true, content: 'Delete successfully'});
+                                                    setCatchListChangeEvent(!catchListChangeEvent);
+                                                },
+                                                (message)=>{
+                                                    setPopUp({visible: true, content: message});
+                                                })
                                         }
                                     }
                                 >
@@ -303,7 +277,7 @@ export default function HostelClient({navigation}){
                                 return <Client client={item}></Client>;
                             }
                             else {
-                                if (item.rid === room) return <Client client={item}></Client>;
+                                if (item.roomName === room) return <Client client={item}></Client>;
                                 else return null;
                             }
                         }
@@ -322,15 +296,15 @@ function Client({client}){
         <View style={styles.clientView}>
             <View style={{width: '90%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                 <View style={{width: '80%'}}>
-                    <Text style={styles.clientText}>Room: {client.rid}</Text>
-                    <Text style={styles.clientText}>Full name: {client.name}</Text>
-                    <Text style={styles.clientText}>UID: {client.uid}</Text>
+                    <Text style={styles.clientText}>Room: {client.roomName}</Text>
+                    <Text style={styles.clientText}>Full name: {client.clientName}</Text>
+                    <Text style={styles.clientText}>UID: {client.clientId}</Text>
                     <Text style={styles.clientText}>Phone number: {client.phoneNum}</Text>
                 </View>
                 <Pressable
                     onPress={
                         () => {
-                            modal.SetDeleteModal({id: client.uid, visible: true})
+                            modal.SetDeleteModal({id: client.clientId, visible: true})
                         }
                     }
                 >
