@@ -4,13 +4,20 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import UserContext from '../context/UserContext';
 import HostelClient from './tab/HostelClient';
 import HostelRoom from './tab/HostelRoom';
+const hostelRoomApi = require('./tab/HostelRoomAPI')
 
 const general = require('../../style')
 
 const Tab = createBottomTabNavigator();
 
 export default function HostScreen({route, navigation}){
-    const user = route.params
+    const [roomList, setRoomList] = React.useState([]);
+    const user = {
+        RoomList: roomList,
+        SetRoomList: setRoomList,
+        id: route.params.id,
+        name: route.params.name
+    }
     
     return (
         <UserContext.Provider value={user}>

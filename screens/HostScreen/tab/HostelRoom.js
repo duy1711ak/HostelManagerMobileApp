@@ -23,7 +23,7 @@ export default function HostelRoom({navigation}){
 
     React.useEffect(
         ()=>{
-            hostelRoomApi.getRoomList(user.id, setData);
+            hostelRoomApi.getRoomList(user.id, user.SetRoomList);
         }, [catchListChangedEv] )
 
 
@@ -255,7 +255,7 @@ export default function HostelRoom({navigation}){
                 </Pressable>
             </View>
             <FlatList
-                data={data}
+                data={user.RoomList}
                 renderItem={
                     ({item})=>{
                         return <Room room={item} changeFunc={setChangeModal} deleteFunc={setDeleteModal}></Room>

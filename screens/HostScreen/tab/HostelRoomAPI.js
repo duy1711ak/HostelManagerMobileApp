@@ -41,7 +41,8 @@ const addRoom= async (hostId, rName, callback, errCallback) => {
             callback()
         }
         else {
-            errCallback('Room name is exist. Add fail')
+            const json=await response.json()
+            errCallback(json.message)
         }
     }
     catch (error) {
@@ -89,11 +90,9 @@ const deleteRoom= async (hostId, roomId, callback, errCallback) => {
         if (status == 200){
             callback()
         }
-        else if (status == 400){
-            errCallback("This room still have client. Please delete client in this room first")
-        }
         else {
-            errCallback("Delete failed.")
+            const json = await response.json()
+            errCallback(json.message)
         }
     }
     catch (error) {

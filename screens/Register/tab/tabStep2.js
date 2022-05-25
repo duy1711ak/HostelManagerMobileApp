@@ -204,7 +204,6 @@ async function register(user, navigation, callback){
         });
         if (response.status == 200){
             const json = await response.json();
-            console.log(json)
             if (json.isClient){
                 navigation.navigate('Client', {
                     id: json.UId,

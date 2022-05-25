@@ -18,15 +18,14 @@ export default function HostelClient({navigation}){
     const [room, setRoom] = React.useState('');
     
     const [data, setData] = React.useState([]);
-    const [list, setList] = React.useState([]);
-    const roomList = list.map(
+    const roomList = (user.RoomList).map(
             (item) => {
                 return <Picker.Item label={item.roomName} value={item.roomName} key={item.roomName}/>
             }
     )
     const [addModalvisible, setAddModalVisible] = React.useState(false);
     const [deleteModal, setDeleteModal] = React.useState({id: '', visible: false});
-    const [roomId, setRoomId] = React.useState(list[0]);
+    const [roomId, setRoomId] = React.useState(user.RoomList[0]);
     const [phoneNum, setPhoneNum] = React.useState('');
     const [uid, setUid] = React.useState('');
     const [popUp, setPopUp] = React.useState({visible: false, content: ''});
@@ -41,7 +40,7 @@ export default function HostelClient({navigation}){
 
     React.useEffect(
         ()=>{
-            hostelRoomApi.getRoomList(user.id, setList)
+            hostelRoomApi.getRoomList(user.id, user.SetRoomList)
         }, []
     )
 
