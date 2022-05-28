@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import UserContext from '../context/UserContext';
 import HostelClient from './tab/HostelClient';
 import HostelRoom from './tab/HostelRoom';
-const hostelRoomApi = require('./tab/HostelRoomAPI')
+import HostelNotification from './tab/HostelNotification';
 
 const general = require('../../style')
 
@@ -62,6 +62,14 @@ export default function HostScreen({route, navigation}){
                     options={{
                         headerShown: false,
                         tabBarLabel:'Room'
+                    }}
+                ></Tab.Screen>
+                <Tab.Screen 
+                    name='HostelNotification' 
+                    component={HostelNotification}
+                    options={{
+                        headerShown: false,
+                        tabBarLabel:'Notification'
                     }}
                 ></Tab.Screen>
             </Tab.Navigator>
