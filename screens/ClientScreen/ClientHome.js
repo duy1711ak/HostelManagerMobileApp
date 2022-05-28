@@ -9,17 +9,34 @@ export default function ClientHome({navigation}){
     const [inf, setInfo] = React.useState();
     const user = React.useContext(UserContext);
     const [catchChangeEvent, setCatchChangeEvent] = React.useState(false);
+    const [isInRoom, setIsInRoom] = React.useState(false);
     React.useEffect(
         () => {
-            clientHomeApi.getClientInfo(user.id, setInfo);
+            clientHomeApi.getClientInfo(user.id, 
+                (json) => {
+                    setInfo(json);
+                    setIsInRoom(true);
+                },
+                () => {
+                    setIsInRoom(false);
+                });
         }, [catchChangeEvent])
-    
-    return (
-        <View style={styles.container}>
-            <HeaderApp navigation={navigation}></HeaderApp>
-            <Display info={inf} cId={user.id} callback={setCatchChangeEvent} catchChangeEvent={catchChangeEvent}/>
-        </View>
-    )
+    if (isInRoom){
+        return (
+            <View style={styles.container}>
+                <HeaderApp navigation={navigation}></HeaderApp>
+                <Display info={inf} cId={user.id} callback={setCatchChangeEvent} catchChangeEvent={catchChangeEvent}/>
+            </View>
+        )
+    }
+    else {
+        return (
+            <View style={styles.container}>
+                <HeaderApp navigation={navigation}></HeaderApp>
+                <Text style={styles.text}>You are not in any hostel</Text>
+            </View>
+        )
+    }
 }
 
 function Display({info, cId, callback, catchChangeEvent}){

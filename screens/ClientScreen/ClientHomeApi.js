@@ -1,4 +1,4 @@
-const getClientInfo = async (id, callback) => {
+const getClientInfo = async (id, callback, errCallback) => {
     try {
         const url = 'https://hostel0tdtd.herokuapp.com/client/'.concat(String(id)).concat('/info');
         const response = await fetch(url,{
@@ -14,7 +14,7 @@ const getClientInfo = async (id, callback) => {
             callback(json);
         }
         else{
-            callback(null)
+            errCallback()
         }
     }
     catch (error) {
