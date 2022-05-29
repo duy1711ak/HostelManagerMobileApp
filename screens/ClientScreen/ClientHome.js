@@ -12,13 +12,16 @@ export default function ClientHome({navigation}){
     const [isInRoom, setIsInRoom] = React.useState(false);
     React.useEffect(
         () => {
+            user.setIsLoading(true);
             clientHomeApi.getClientInfo(user.id, 
                 (json) => {
                     setInfo(json);
                     setIsInRoom(true);
+                    user.setIsLoading(false);
                 },
                 () => {
                     setIsInRoom(false);
+                    user.setIsLoading(false);
                 });
         }, [catchChangeEvent])
     if (isInRoom){

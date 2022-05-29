@@ -15,10 +15,12 @@ export default function NotificationList({navigation}){
 
     React.useEffect(
         () => {
+            user.setIsLoading(true);
             getNotificationList(user.id, pageId,
                 (json) => {
                     setNumNoti(json.total);
-                    setData(json.result)
+                    setData(json.result);
+                    user.setIsLoading(false);
                 })
         }, [pageId])
 

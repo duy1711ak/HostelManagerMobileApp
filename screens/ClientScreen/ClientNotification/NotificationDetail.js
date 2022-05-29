@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, Pressable, StyleSheet} from 'react-native';
-import {getNotificationDetail} from './clientNotificationApi'
+import {getNotificationDetail} from './clientNotificationApi';
 import UserContext from '../../context/UserContext';
 const general = require('../../../style')
 
@@ -11,9 +11,11 @@ export default function NotificationDetail({route, navigation}){
     const user = React.useContext(UserContext);
     React.useEffect(
         () => {
+            user.setIsLoading(true);
             getNotificationDetail(user.id, route.params.id, 
                 (json) => {
                     setContent(json.result);
+                    user.setIsLoading(false);
                 })
         }
     )

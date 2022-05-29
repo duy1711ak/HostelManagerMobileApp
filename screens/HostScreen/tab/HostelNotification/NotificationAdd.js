@@ -5,13 +5,11 @@ import {postNotification} from './notificationApi';
 import UserContext from '../../../context/UserContext';
 const general = require('../../../../style')
 
-
 export default function NotificationAdd({route, navigation}){
     const [subject, setSubject] = React.useState('');
     const [content, setContent] = React.useState('');
     const user = React.useContext(UserContext);
     const [popUp, setPopUp] = React.useState({visible: false, content:''});
-    var numOfLinesCompany = 1;
     
     return (
         <View style={styles.container}>
@@ -99,8 +97,10 @@ export default function NotificationAdd({route, navigation}){
                 <Pressable
                     onPress={
                         () => {
+                            user.setIsLoading(true);
                             postNotification(user.id, subject, content, 
                                 (json) => {
+                                    user.setIsLoading(false);
                                     setPopUp({visible: true, content:'Successful'})
                                 });
                         }

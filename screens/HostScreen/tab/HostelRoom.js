@@ -16,14 +16,18 @@ export default function HostelRoom({navigation}){
     const [changeErr, setChangeErr] = React.useState('');
     const [deleteModal, setDeleteModal] = React.useState({visible: false, id: '', name:''});
     const [popUp, setPopUp] = React.useState({visible: false, content: ''});
-    const [data, setData] = React.useState([]);
     const [catchListChangedEv, setCatchListChangedEv]= React.useState(false);
 
     const user = React.useContext(UserContext);
 
     React.useEffect(
         ()=>{
-            hostelRoomApi.getRoomList(user.id, user.SetRoomList);
+            user.setIsLoading(true);
+            hostelRoomApi.getRoomList(user.id, 
+                (data) => {
+                    user.SetRoomList(data);
+                    user.setIsLoading(false);
+                });
         }, [catchListChangedEv] )
 
 

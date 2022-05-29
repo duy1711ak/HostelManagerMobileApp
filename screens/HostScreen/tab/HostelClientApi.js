@@ -12,7 +12,7 @@ const getClientList = async (hostId, callback) => {
         if (status == 200){
             const json = await response.json();
             const list =await json.list.sort( (a, b) => (a.roomName).localeCompare(b.roomName));
-            callback(json.list)
+            callback(list);
         }
         else {
             callback([])

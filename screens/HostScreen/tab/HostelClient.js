@@ -35,14 +35,18 @@ export default function HostelClient({navigation}){
 
     React.useEffect(
         ()=>{
-            hostelClientApi.getClientList(user.id, setData)
+            user.setIsLoading(true)
+            hostelClientApi.getClientList(user.id, 
+                (data) => {
+                    setData(data);
+                    user.setIsLoading(false);
+                })
         }, [catchListChangeEvent])
 
     React.useEffect(
         ()=>{
             hostelRoomApi.getRoomList(user.id, user.SetRoomList)
-        }, []
-    )
+        }, [])
 
     return (
         <Ctx.Provider value={{SetDeleteModal: setDeleteModal}}>

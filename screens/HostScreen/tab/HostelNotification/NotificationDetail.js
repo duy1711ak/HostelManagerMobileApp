@@ -4,7 +4,6 @@ import {getNotificationDetail} from './notificationApi' ;
 import UserContext from '../../../context/UserContext';
 const general = require('../../../../style')
 
-
 export default function NotificationDetail({route, navigation}){
     const time = new Date(route.params.time);
     const subject = route.params.subject;
@@ -12,12 +11,13 @@ export default function NotificationDetail({route, navigation}){
     const user = React.useContext(UserContext);
     React.useEffect(
         () => {
+            user.setIsLoading(true);
             getNotificationDetail(user.id, route.params.id, 
                 (json) => {
                     setContent(json.result);
+                    user.setIsLoading(false);
                 })
-        }
-    )
+        }, [])
     
     
     return (

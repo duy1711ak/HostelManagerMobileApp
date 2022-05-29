@@ -15,14 +15,17 @@ export default function NotificationList({navigation}){
 
     React.useEffect(
         () => {
+            user.setIsLoading(true);
             getNotificationList(user.id, pageId,
                 (json) => {
                     setNumNoti(json.total);
                     setData(json.result);
                     setIsInRoom(true);
+                    user.setIsLoading(false);
                 },
                 () => {
                     setIsInRoom(false);
+                    user.setIsLoading(false);
                 })
         }, [pageId])
     if (isInRoom) {

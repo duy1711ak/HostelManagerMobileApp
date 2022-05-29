@@ -1,5 +1,6 @@
 import React from 'react';
 import {Modal, Pressable, StyleSheet, View, Text, TextInput } from 'react-native';
+import AppLoader from '../component/AppLoader';
 
 const general = require('../../style')
 
@@ -8,139 +9,148 @@ export default function LogInScreen({navigation}) {
     const [password, setPassword] = React.useState('');
     const [usernameErr, setUsernameErr] = React.useState();
     const [passwordErr, setPasswordErr] = React.useState();
-    const [modalVisible, setModalVisible] = React.useState(false)
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [loginPending, setLoginpending] = React.useState(false);
 
     return (
-        <View style={styles.container}>
-            <Modal
-                animationType='none'
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose ={
-                    () => {
-                        setModalVisible(false)
-                    }
-                }
-            >
-                <View style={styles.modal}>
-                    <Text style={styles.modalText} >   
-                        Username or password is is incorrect. If you don't have account, please register.
-                    </Text>
-                    <Pressable
-                        style={styles.modalBt}
-                        onPress={
-                            () => {
-                                setModalVisible(false);
-                            }
+        <>
+            <View style={styles.container}>
+                <Modal
+                    animationType='none'
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose ={
+                        () => {
+                            setModalVisible(false)
                         }
-                    >
-                        <Text style={styles.modalBtText}>
-                            Try again
+                    }
+                >
+                    <View style={styles.modal}>
+                        <Text style={styles.modalText} >   
+                            Username or password is is incorrect. If you don't have account, please register.
                         </Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.modalBt}
-                        onPress={
-                            () => {
-                                navigation.navigate('Register')
+                        <Pressable
+                            style={styles.modalBt}
+                            onPress={
+                                () => {
+                                    setModalVisible(false);
+                                }
+                            }
+                        >
+                            <Text style={styles.modalBtText}>
+                                Try again
+                            </Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.modalBt}
+                            onPress={
+                                () => {
+                                    navigation.navigate('Register')
+                                }
+                            }
+                        >
+                            <Text style={styles.modalBtText}>Register</Text>
+                        </Pressable>
+                    </View>
+                </Modal>
+                <Text style={styles.text}>Log in</Text>
+                <View style={{alignItems: 'baseline', width: 280}}>
+                    <Text style={{fontSize: general.smalltext}}>
+                        Username:
+                    </Text>
+                </View>
+                <TextInput 
+                    style={styles.text_input} 
+                    onChangeText={setUsername}
+                    editable={true}
+                    value={username}
+                ></TextInput>
+                <View style={{alignItems: 'baseline', width: 280}}>
+                    <Text 
+                        style={{
+                            fontSize: 14,
+                            color: 'red'
+                        }}
+                    >
+                        {usernameErr}
+                    </Text>
+                </View>
+                <View style={{alignItems: 'baseline', width: 280}}>
+                    <Text style={{fontSize: general.smalltext}}>
+                        Password:
+                    </Text>
+                </View>
+                <TextInput 
+                    style={styles.text_input} 
+                    onChangeText={setPassword}
+                    editable= {true}
+                    value={password}
+                ></TextInput>
+                <View style={{alignItems: 'baseline', width: 280}}>
+                    <Text 
+                        style={{
+                            fontSize: 14,
+                            color: 'red'
+                        }}
+                    >
+                        {passwordErr}
+                    </Text>
+                </View>
+                <Pressable 
+                    style={styles.bt}
+                    onPress={
+                        () => {
+                            let isValid = true;
+                            if (haveSpecialChar(username.trim())) {
+                                setUsernameErr('Username must not have special character');
+                                isValid = false;
+                            }
+                            else if (username.trim() == '') {
+                                setUsernameErr('Must enter username');
+                                isValid = false;
+                            }
+                            else {
+                                setUsernameErr('');
+                            }
+                            
+                            if (haveSpecialChar(password.trim())) {
+                                setPasswordErr('Password must not have special character');
+                                isValid = false;
+                            }
+                            else if (password.trim() == '') {
+                                setPasswordErr('Must enter password');
+                                isValid = false;
+                            }
+                            else {
+                                setPasswordErr('');
+                            }
+
+                            if (isValid){
+                                setLoginpending(true);
+                                login(username, password, navigation, 
+                                    (modalVisible, loader) => {
+                                        setModalVisible(modalVisible);
+                                        setLoginpending(loader);
+                                    })
                             }
                         }
-                    >
-                        <Text style={styles.modalBtText}>Register</Text>
-                    </Pressable>
-                </View>
-            </Modal>
-            <Text style={styles.text}>Log in</Text>
-            <View style={{alignItems: 'baseline', width: 280}}>
-                <Text style={{fontSize: general.smalltext}}>
-                    Username:
-                </Text>
-            </View>
-            <TextInput 
-                style={styles.text_input} 
-                onChangeText={setUsername}
-                editable={true}
-                value={username}
-            ></TextInput>
-            <View style={{alignItems: 'baseline', width: 280}}>
-                <Text 
-                    style={{
-                        fontSize: 14,
-                        color: 'red'
-                    }}
+                    }
                 >
-                    {usernameErr}
-                </Text>
-            </View>
-            <View style={{alignItems: 'baseline', width: 280}}>
-                <Text style={{fontSize: general.smalltext}}>
-                    Password:
-                </Text>
-            </View>
-            <TextInput 
-                style={styles.text_input} 
-                onChangeText={setPassword}
-                editable= {true}
-                value={password}
-            ></TextInput>
-            <View style={{alignItems: 'baseline', width: 280}}>
-                <Text 
-                    style={{
-                        fontSize: 14,
-                        color: 'red'
-                    }}
-                >
-                    {passwordErr}
-                </Text>
-            </View>
-            <Pressable 
-                style={styles.bt}
-                onPress={
-                    () => {
-                        let isValid = true;
-                        if (haveSpecialChar(username.trim())) {
-                            setUsernameErr('Username must not have special character');
-                            isValid = false;
-                        }
-                        else if (username.trim() == '') {
-                            setUsernameErr('Must enter username');
-                            isValid = false;
-                        }
-                        else {
-                            setUsernameErr('');
-                        }
-                        
-                        if (haveSpecialChar(password.trim())) {
-                            setPasswordErr('Password must not have special character');
-                            isValid = false;
-                        }
-                        else if (password.trim() == '') {
-                            setPasswordErr('Must enter password');
-                            isValid = false;
-                        }
-                        else {
-                            setPasswordErr('');
-                        }
-
-                        if (isValid){
-                            login(username, password, navigation, setModalVisible)
+                    <Text style={styles.btLogin}>Log in</Text>
+                </Pressable>
+                <Pressable 
+                    style={styles.bt}
+                    onPress={
+                        () => {
+                            navigation.navigate('Register')
                         }
                     }
-                }
-            >
-                <Text style={styles.btLogin}>Log in</Text>
-            </Pressable>
-            <Pressable 
-                style={styles.bt}
-                onPress={
-                    () => {
-                        navigation.navigate('Register')
-                    }
-                }
-            >
-                <Text style={styles.btRegister}>Register</Text>
-            </Pressable>
-        </View>
+                >
+                    <Text style={styles.btRegister}>Register</Text>
+                </Pressable>
+            </View>
+            {loginPending? <AppLoader></AppLoader> : null}
+        </>
     );
 }
 
@@ -150,7 +160,7 @@ function haveSpecialChar(str){
     return format.test(str)
 }
 
-const login = async (username, password,navigation, callback) => {
+const login = async (username, password, navigation, callback) => {
     try {
         const response = await fetch('https://hostel0tdtd.herokuapp.com/login',{
             method : 'POST',
@@ -166,6 +176,7 @@ const login = async (username, password,navigation, callback) => {
         const status = response.status;
         if (status == 200){
             const json = await response.json();
+            callback(false, false);
             if (json.user.isClient){
                 navigation.navigate('Client', {
                     id: json.user.UId,
@@ -180,7 +191,7 @@ const login = async (username, password,navigation, callback) => {
             }
         }
         else{
-            callback(true)
+            callback(true, false)
         }
     }
     catch (error) {
