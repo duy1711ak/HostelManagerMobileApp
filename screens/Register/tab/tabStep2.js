@@ -1,7 +1,7 @@
 import React from "react";
 import {Pressable, View, Text, StyleSheet, TextInput, Modal} from "react-native";
 import RegisterContext from "../../context/RegisterContext";
-import axios from 'axios';
+import AppLoader from "../../component/AppLoader";
 const general = require('../../../style')
 
 export default function Tab2({navigation}){
@@ -10,7 +10,8 @@ export default function Tab2({navigation}){
     const [usernameErr, setUsernameErr] = React.useState('');
     const [passwordErr, setPasswordErr] = React.useState('');
     const [confirmErr, setConfirmErr] = React.useState('');
-    const [modalVisible, setModalVisible] = React.useState(false)
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     return (
         <View style={styles.container}>
@@ -167,7 +168,12 @@ export default function Tab2({navigation}){
                             }
 
                             if (isValid){
-                                register(user, navigation, setModalVisible);
+                                setIsLoading(true);
+                                register(user, navigation, 
+                                    (modalVisible) => {
+                                        setModalVisible(modalVisible);
+                                        setIsLoading(false);
+                                    });
                             }
                         }
                     }
@@ -175,6 +181,7 @@ export default function Tab2({navigation}){
                     <Text style={styles.button}>Ok</Text>
                 </Pressable>
             </View>
+            {isLoading? <AppLoader></AppLoader> : null}
         </View>
     )
 }
@@ -204,6 +211,7 @@ async function register(user, navigation, callback){
         });
         if (response.status == 200){
             const json = await response.json();
+            callback(false);
             if (json.isClient){
                 navigation.navigate('Client', {
                     id: json.UId,
@@ -222,7 +230,6 @@ async function register(user, navigation, callback){
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 const styles = StyleSheet.create({

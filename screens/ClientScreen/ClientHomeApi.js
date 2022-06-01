@@ -18,7 +18,6 @@ const getClientInfo = async (id, callback, errCallback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 
@@ -38,7 +37,6 @@ const leaveCurrentHostel= async (id, callback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 

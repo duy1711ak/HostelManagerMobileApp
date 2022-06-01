@@ -36,11 +36,11 @@ export default function NotificationList({navigation}){
             >
                 <Text style={styles.text}>Total: {numNoti} notification</Text>
                 <Pressable
-                    onPress={
-                        () => {
-                            navigation.navigate('notificationPost')
-                        }
-                    }
+                    // onPress={
+                    //     () => {
+                    //         navigation.navigate('notificationPost')
+                    //     }
+                    // }
                 >
                     <Text style={{
                         fontSize: general.smalltext,
@@ -106,15 +106,15 @@ const Item = ({data, navigation}) => {
     const time = new Date(data.createAt)
     return (
         <Pressable
-            onPress={
-                ()=> {
-                    navigation.navigate('notificationDetail', {
-                        time: data.createAt,
-                        subject: data.subject,
-                        id: data.id
-                    })
-                }
-            }
+            // onPress={
+            //     ()=> {
+            //         navigation.navigate('notificationDetail', {
+            //             time: data.createAt,
+            //             subject: data.subject,
+            //             id: data.id
+            //         })
+            //     }
+            // }
             style={styles.view}
         >
             <Text style={styles.text}>{String(time)}</Text>

@@ -195,7 +195,6 @@ const login = async (username, password, navigation, callback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 

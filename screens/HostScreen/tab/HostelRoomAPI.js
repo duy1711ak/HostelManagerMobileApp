@@ -19,7 +19,6 @@ const getRoomList = async (hostId, callback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 
@@ -46,7 +45,6 @@ const addRoom= async (hostId, rName, callback, errCallback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 
@@ -72,7 +70,6 @@ const changeRoomName = async (hostId, roomId, newRoomName, callback, errCallback
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 
@@ -96,7 +93,6 @@ const deleteRoom= async (hostId, roomId, callback, errCallback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 

@@ -19,7 +19,6 @@ const getClientList = async (hostId, callback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 
@@ -48,7 +47,6 @@ const addClient= async (hostId, rname, uid, phoneNum, callback, errCallback) => 
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 
@@ -71,7 +69,6 @@ const deleteClient= async (hostId, uId, callback, errCallback) => {
         }
     }
     catch (error) {
-        console.log(error);
     }
 }
 
