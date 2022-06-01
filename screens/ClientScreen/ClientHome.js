@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         fontSize: general.text,
         marginBottom: 40,
         fontWeight: '800',
-        color: general.primary1
+        color: general.headerBackground
     },
     info : {
         paddingLeft: 30,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     infoField: {
         marginTop: 10,
         fontSize: general.smalltext,
-        color: general.primary1,
+        color: general.headerBackground,
         fontWeight: '600'
     },
     bt : {
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     },
     btText : {
         fontWeight: '600',
-        color: '#000000',
+        color: general.headerBackground,
         fontSize: general.smalltext,
         textAlign: 'center'
     }

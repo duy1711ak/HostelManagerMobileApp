@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
     bt : {
         fontSize: general.smalltext,
-        color: general.primary1,
+        color: general.headerBackground,
         borderColor: general.primary1,
         borderWidth: 2,
         borderRadius: 20,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: general.smalltext,
-        color: general.primary1,
+        color: general.headerBackground,
         fontWeight: '600',
         marginTop: 10,
         marginBottom: 10,

@@ -275,7 +275,7 @@ function Room({room, changeFunc, deleteFunc}){
     return (
         <View style={styles.roomView}>
             <Text style={{
-                color: '#000000',
+                color: general.headerBackground,
                 fontWeight: '600'
             }}>Room: {room.roomName}</Text>
             <Pressable
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 20,
         padding: 10,
-        color: '#000000',
+        color: general.headerBackground,
         fontWeight: '600'
     },
     roomView: {

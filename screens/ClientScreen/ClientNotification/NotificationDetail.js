@@ -17,7 +17,7 @@ export default function NotificationDetail({route, navigation}){
                     setContent(json.result);
                     user.setIsLoading(false);
                 })
-        }
+        }, []
     )
     
     return (
@@ -37,7 +37,7 @@ export default function NotificationDetail({route, navigation}){
                 >
                     <Text style={{
                         fontSize: general.smalltext,
-                        color: general.primary1,
+                        color: general.headerBackground,
                         fontWeight: '600',
                         marginTop: 10,
                         marginBottom: 10,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     },
     bt : {
         fontSize: general.smalltext,
-        color: general.primary1,
+        color: general.headerBackground,
         borderColor: general.primary1,
         borderWidth: 2,
         borderRadius: 20,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: general.smalltext,
-        color: general.primary1,
+        color: general.headerBackground,
         fontWeight: '600',
         marginTop: 10,
         marginBottom: 10,

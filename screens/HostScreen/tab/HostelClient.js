@@ -55,7 +55,7 @@ export default function HostelClient({navigation}){
                     setData(data);
                     user.setIsLoading(false);
                 })
-        }, [catchListChangeEvent])
+        }, [catchListChangeEvent, user.RoomList])
 
     return (
         <Ctx.Provider value={{SetDeleteModal: setDeleteModal}}>
@@ -355,7 +355,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginLeft: 20,
         backgroundColor: general.backgroundColor,
-        paddingLeft: 10
+        paddingLeft: 10,
+        color: general.headerBackground
     },
     bt : {
         fontSize: general.smalltext,
