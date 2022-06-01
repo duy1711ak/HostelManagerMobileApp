@@ -212,16 +212,16 @@ async function register(user, navigation, callback){
         if (response.status == 200){
             const json = await response.json();
             callback(false);
-            if (json.isClient){
+            if (json.user.isClient){
                 navigation.navigate('Client', {
-                    id: json.UId,
-                    name: json.name
+                    id: json.user.UId,
+                    name: json.user.name
                 });
             }
             else {
                 navigation.navigate('Host', {
-                    id: json.UId,
-                    name: json.name
+                    id: json.user.UId,
+                    name: json.user.name
                 });
             }
         }

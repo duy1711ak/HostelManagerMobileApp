@@ -363,6 +363,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     clientText: {
+        color: '#000000',
         fontSize: general.smalltext,
         fontWeight: '600',
         margin: 10
