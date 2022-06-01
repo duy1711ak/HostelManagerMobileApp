@@ -6,23 +6,22 @@ const general = require('../../../../style')
 
 
 export default function NotificationList({navigation}){
-    const [numNoti, setNumNoti] = React.useState();
     const [data, setData] = React.useState([]);
     const [pageId, setPageId] = React.useState(1);
     const user = React.useContext(UserContext);
-    const numberPage = Math.floor((numNoti - 1) / 10) + 1;
-    const [isLastPage, setIsLastPage] = React.useState(pageId == numberPage);
+    const numberPage = Math.floor((user.numNoti - 1) / 10) + 1;
+    const [isLastPage, setIsLastPage] = React.useState(pageId === numberPage);
 
     React.useEffect(
         () => {
             user.setIsLoading(true);
             getNotificationList(user.id, pageId,
                 (json) => {
-                    setNumNoti(json.total);
+                    user.setNumNoti(json.total);
                     setData(json.result);
                     user.setIsLoading(false);
                 })
-        }, [pageId])
+        }, [pageId, user.numNoti])
 
     return (
         <View style={styles.container}>
@@ -34,7 +33,7 @@ export default function NotificationList({navigation}){
                     justifyContent: 'space-between'
                 }}
             >
-                <Text style={styles.text}>Total: {numNoti} notification</Text>
+                <Text style={styles.text}>Total: {user.numNoti} notification</Text>
                 <Pressable
                     onPress={
                         () => {

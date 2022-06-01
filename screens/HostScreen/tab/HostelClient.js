@@ -25,7 +25,7 @@ export default function HostelClient({navigation}){
     )
     const [addModalvisible, setAddModalVisible] = React.useState(false);
     const [deleteModal, setDeleteModal] = React.useState({id: '', visible: false});
-    const [roomId, setRoomId] = React.useState(user.RoomList[0]);
+    const [roomId, setRoomId] = React.useState(user.RoomList[0].roomName);
     const [phoneNum, setPhoneNum] = React.useState('');
     const [uid, setUid] = React.useState('');
     const [popUp, setPopUp] = React.useState({visible: false, content: ''});

@@ -14,12 +14,15 @@ const Tab = createBottomTabNavigator();
 export default function HostScreen({route, navigation}){
     const [roomList, setRoomList] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [numNotification, setNumNotification] = React.useState(0);
     const user = {
         RoomList: roomList,
         SetRoomList: setRoomList,
         id: route.params.id,
         name: route.params.name,
-        setIsLoading: setIsLoading
+        setIsLoading: setIsLoading,
+        numNoti: numNotification,
+        setNumNoti: setNumNotification
     }
     
     return (

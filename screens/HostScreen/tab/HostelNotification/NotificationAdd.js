@@ -101,6 +101,7 @@ export default function NotificationAdd({route, navigation}){
                             postNotification(user.id, subject, content, 
                                 (json) => {
                                     user.setIsLoading(false);
+                                    user.setNumNoti(user.numNoti + 1);
                                     setPopUp({visible: true, content:'Successful'})
                                 });
                         }
