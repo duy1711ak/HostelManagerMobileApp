@@ -274,7 +274,10 @@ export default function HostelRoom({navigation}){
 function Room({room, changeFunc, deleteFunc}){
     return (
         <View style={styles.roomView}>
-            <Text>Room: {room.roomName}</Text>
+            <Text style={{
+                color: '#000000',
+                fontWeight: '600'
+            }}>Room: {room.roomName}</Text>
             <Pressable
                 onPress={
                     ()=>{
@@ -319,7 +322,9 @@ const styles = StyleSheet.create({
         borderColor: general.primary1,
         borderWidth: 2,
         borderRadius: 20,
-        padding: 10
+        padding: 10,
+        color: '#000000',
+        fontWeight: '600'
     },
     roomView: {
         width: '90%',

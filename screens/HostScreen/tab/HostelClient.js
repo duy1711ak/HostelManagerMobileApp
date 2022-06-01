@@ -12,9 +12,24 @@ const general = require('../../../style')
 const Ctx = React.createContext()
 
 export default function HostelClient({navigation}){
+    const user = React.useContext(UserContext)
+    const [roomId, setRoomId] = React.useState('');
+    React.useEffect(()=>{
+        if ((user.RoomList).length == 0){
+            setRoomId('');
+        }
+        else {
+            setRoomId(user.RoomList[0].roomName);
+        }
+    }, [user.RoomList])
+    React.useEffect(
+        ()=>{
+            hostelRoomApi.getRoomList(user.id, (list) => {
+                user.SetRoomList(list);
+            } );
+        }, [])
     const pickerRef = React.useRef();
     const addPickerRef = React.useRef();
-    const user = React.useContext(UserContext)
     const [room, setRoom] = React.useState('');
     
     const [data, setData] = React.useState([]);
@@ -25,7 +40,6 @@ export default function HostelClient({navigation}){
     )
     const [addModalvisible, setAddModalVisible] = React.useState(false);
     const [deleteModal, setDeleteModal] = React.useState({id: '', visible: false});
-    const [roomId, setRoomId] = React.useState(user.RoomList[0].roomName);
     const [phoneNum, setPhoneNum] = React.useState('');
     const [uid, setUid] = React.useState('');
     const [popUp, setPopUp] = React.useState({visible: false, content: ''});
@@ -42,11 +56,6 @@ export default function HostelClient({navigation}){
                     user.setIsLoading(false);
                 })
         }, [catchListChangeEvent])
-
-    React.useEffect(
-        ()=>{
-            hostelRoomApi.getRoomList(user.id, user.SetRoomList)
-        }, [])
 
     return (
         <Ctx.Provider value={{SetDeleteModal: setDeleteModal}}>
@@ -168,7 +177,7 @@ export default function HostelClient({navigation}){
                         width: '100%'}}
                     >
                         <View style={styles.Modal}>
-                            <Text>Do you want to delete client whose UID is {deleteModal.id} ?</Text>
+                            <Text style={{color: general.headerBackground}}>Do you want to delete client whose UID is {deleteModal.id} ?</Text>
                             <View style={styles.ModalBtView}>
                                 <Pressable 
                                     style={styles.ModalBt}
@@ -221,7 +230,9 @@ export default function HostelClient({navigation}){
                         width: '100%'}}
                     >
                         <View style={styles.Modal}>
-                            <Text>{popUp.content}</Text>
+                            <Text style={{
+                                color: general.headerBackground
+                            }}>{popUp.content}</Text>
                             <View style={{
                                 width: '60%',
                                 marginTop: 50,
@@ -249,7 +260,7 @@ export default function HostelClient({navigation}){
                         flexDirection: 'row',
                         alignItems: 'center'
                     }}>
-                        <Text>Phòng: </Text>
+                        <Text style={{color: general.headerBackground, fontWeight:'500'}}>Phòng: </Text>
                         <Picker
                             ref={pickerRef}
                             selectedValue={room}
@@ -351,7 +362,9 @@ const styles = StyleSheet.create({
         borderColor: general.primary1,
         borderWidth: 2,
         borderRadius: 20,
-        padding: 10
+        padding: 10,
+        color: general.headerBackground,
+        fontWeight: '600'
     },
     clientView: {
         backgroundColor: general.backgroundColor,
@@ -363,7 +376,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     clientText: {
-        color: '#000000',
+        color: general.headerBackground,
         fontSize: general.smalltext,
         fontWeight: '600',
         margin: 10

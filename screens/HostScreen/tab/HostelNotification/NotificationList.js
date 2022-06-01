@@ -43,7 +43,7 @@ export default function NotificationList({navigation}){
                 >
                     <Text style={{
                         fontSize: general.smalltext,
-                        color: general.primary1,
+                        color: general.headerBackground,
                         fontWeight: '600',
                         marginTop: 10,
                         marginBottom: 10,
@@ -136,7 +136,9 @@ const styles = StyleSheet.create({
         borderColor: general.primary1,
         borderWidth: 2,
         borderRadius: 20,
-        padding: 10
+        padding: 10,
+        color: general.headerBackground,
+        fontWeight: '600',
     },
     view: {
         backgroundColor: general.backgroundColor,
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: general.smalltext,
-        color: general.primary1,
+        color: general.headerBackground,
         fontWeight: '600',
         marginTop: 10,
         marginBottom: 10,
